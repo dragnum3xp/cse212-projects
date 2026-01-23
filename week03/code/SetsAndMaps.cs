@@ -22,7 +22,22 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var seen = new HashSet<string>();
+        var degrees = new List<string>();
+        foreach (var w in words)
+        {
+            var reversed = new string(w.Reverse().ToArray());
+            if (seen.Contains(reversed))
+            {
+                degrees.Add($"{w} & {reversed}");
+            }
+            else
+            {
+                seen.Add(w);
+            }
+        }
+
+        return degrees.ToArray();
     }
 
     /// <summary>
@@ -42,11 +57,16 @@ public static class SetsAndMaps
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
-        }
+            var degree = fields[3].Trim();
 
-        return degrees;
+        if (!degrees.ContainsKey(degree))
+            degrees[degree] = 0;
+
+        degrees[degree]++;
     }
+
+    return degrees;
+}
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -66,9 +86,24 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
-    }
+        var counts = new Dictionary<char, int>();
+
+        foreach (char c in word1.ToLower())
+        {
+            if (c == ' ') continue;
+            counts[c] = counts.GetValueOrDefault(c) + 1;
+        }
+
+        foreach (char c in word2.ToLower())
+        {
+            if (c == ' ') continue;
+            if (!counts.ContainsKey(c)) return false;
+            counts[c]--;
+            if (counts[c] == 0) counts.Remove(c);
+        }
+
+        return counts.Count == 0;
+}
 
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
